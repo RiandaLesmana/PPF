@@ -141,6 +141,7 @@ class ItemController extends Controller
 
     public function edit(Item $item)
     {
+        $item = Item::findOrFail($id);
         $jurusan = Jurusan::all();
         return view('items.edit', compact('item', 'jurusan'));
     }
@@ -219,6 +220,8 @@ class ItemController extends Controller
 
         $item->status_pendaftaran = $request->input('status_pendaftaran');
         $item->save();
+        $item = Item::findOrFail($id);
+        $item->update($request->all());
 
         return redirect()->route('items.index')->with('success', 'Data siswa berhasil diperbarui.');
     }
