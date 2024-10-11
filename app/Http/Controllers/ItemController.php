@@ -24,8 +24,6 @@ class ItemController extends Controller
         return view('items.index', compact('items'));
     }
 
-
-
     public function create()
     {
         $existingRegistration = Item::where('user_id', auth()->id())->first();
@@ -45,7 +43,7 @@ class ItemController extends Controller
         'nik' => 'required|string|max:20',
         'nama_siswa' => 'required|string|max:255',
         'jenis_kelamin' => 'required|string|max:10',
-        'pas_foto' => 'required',
+        'pas_foto' => 'string',
         'agama' => 'required|string|max:10',
         'tempat_lahir' => 'required|string|max:255',
         'tanggal_lahir' => 'required|date',
