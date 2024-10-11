@@ -1,17 +1,17 @@
 import "./bootstrap";
-
 import Alpine from "alpinejs";
 
 window.Alpine = Alpine;
-
 Alpine.start();
 
 window.confirmDelete = function () {
     return confirm("Apakah Anda yakin ingin menghapus data ini?");
 };
+
 window.confirmUpdate = function () {
     return confirm("Apakah Anda yakin ingin finalisasi data ini?");
 };
+
 window.openCamera = function () {
     const video = document.getElementById("video");
     const takePhotoButton = document.getElementById("takePhotoButton");
@@ -64,10 +64,22 @@ function dataURLtoFile(dataurl, filename) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const photo = document.querySelector("img");
-    photo.addEventListener("mouseover", function () {
-        this.classList.add("scale-110");
-    });
-    photo.addEventListener("mouseout", function () {
-        this.classList.remove("scale-110");
-    });
+    if (photo) {
+        photo.addEventListener("mouseover", function () {
+            this.classList.add("scale-110");
+        });
+        photo.addEventListener("mouseout", function () {
+            this.classList.remove("scale-110");
+        });
+    }
+
+    const video = document.getElementById("video");
+    const takePhotoButton = document.getElementById("takePhotoButton");
+    const canvas = document.getElementById("canvas");
+    const cameraImage = document.getElementById("camera_image");
+    const fileInput = document.querySelector('input[name="pas_foto"]');
+
+    if (video && takePhotoButton && canvas && cameraImage && fileInput) {
+        // Add any additional event listeners or initialization here if needed
+    }
 });
