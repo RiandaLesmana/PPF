@@ -38,12 +38,11 @@ class ItemController extends Controller
     public function store(Request $request)
 {
     $request->validate([
-        // Validation rules
         'nisn' => 'required|string|max:20',
         'nik' => 'required|string|max:20',
         'nama_siswa' => 'required|string|max:255',
         'jenis_kelamin' => 'required|string|max:10',
-        'pas_foto' => 'string',
+        'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         'agama' => 'required|string|max:10',
         'tempat_lahir' => 'required|string|max:255',
         'tanggal_lahir' => 'required|date',
@@ -69,11 +68,19 @@ class ItemController extends Controller
     $nextNumber = $latestItem ? (int)substr($latestItem->id_pendaftaran, 4) + 1 : 1;
     $idPendaftaran = 'IPCS' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT); 
 
+    $data = $request->all();
+
     if ($request->hasFile('pas_foto')) {
         $file = $request->file('pas_foto');
         $path = $file->store('public/fotos');
         $data['pas_foto'] = $path;
     }
+
+    $data['user_id'] = auth()->id();
+    $data['id_pendaftaran'] = $idPendaftaran;
+    $data['tgl_pendaftaran'] = Carbon::now();
+
+    Item::create($data);
 
     // Store the new item
     Item::create([
@@ -154,7 +161,7 @@ class ItemController extends Controller
             'nik' => 'required|string|max:20',
             'nama_siswa' => 'required|string|max:255',
             'jenis_kelamin' => 'required|string|max:10',
-            'pas_foto' => 'nullable',
+            'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'agama' => 'required|string|max:10',
             'tempat_lahir' => 'required|string|max:255',
             'tanggal_lahir' => 'required|date',
@@ -177,17 +184,21 @@ class ItemController extends Controller
             'status_pendaftaran' => 'nullable|string|max:255',
         ]);
 
+        $data = $request->all();
+
         if ($request->hasFile('pas_foto')) {
             if ($item->pas_foto) {
                 Storage::delete($item->pas_foto);
             }
-    
+
             $file = $request->file('pas_foto');
             $path = $file->store('public/fotos');
             $data['pas_foto'] = $path;
         } else {
             $data['pas_foto'] = $item->pas_foto;
         }
+
+        $item->update($data);
 
         $item->update([
             'id_pendaftaran' => $request->id_pendaftaran,
