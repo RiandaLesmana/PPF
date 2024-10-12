@@ -1,12 +1,12 @@
 <?php
+// app/Http/Middleware/Admin.php
 
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class Admin
 {
@@ -17,8 +17,10 @@ class Admin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || (Auth::user()->roles !== 'admin' && Auth::user()->roles !== 'member')) {
-            return Redirect::route('items.index'); // Redirect if not admin or member
+        $user = Auth::user();
+
+        if (!Auth::check() || ($user && !in_array($user->roles, ['admin', 'member']))) {
+            return redirect()->route('items.index'); // Redirect if not admin or member
         }
 
         return $next($request);
